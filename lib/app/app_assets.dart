@@ -5,6 +5,12 @@ class AppAssets {
   static const String _basePath = "assets/svgs";
   static const String githubIcon = "$_basePath/github.svg";
   static const String googleIcon = "$_basePath/google.svg";
+  static const String arrivedIcon = "$_basePath/arrived.svg";
+  static const String cartIcon = "$_basePath/cart.svg";
+  static const String deliveredIcon = "$_basePath/delivered.svg";
+  static const String deliveryIcon = "$_basePath/delivery.svg";
+  static const String handshakeIcon = "$_basePath/handshake.svg";
+  static const String progressIcon = "$_basePath/progress.svg";
 }
 
 class AppImageBuilder extends StatelessWidget {
