@@ -57,15 +57,13 @@ class AuthScreen extends StatelessWidget {
                       _horizontalLine()
                     ],
                   )),
-                  const AppSpace(axis: Axis.vertical, percentage: .05),
+                  const AppSpace(axis: Axis.vertical, percentage: .03),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
-                        child: AppImageBuilder(
-                          path: AppAssets.githubIcon,
-                        ),
-                      )
+                      _socialContainer(icon: AppAssets.googleIcon),
+                      const AppSpace(axis: Axis.horizontal, percentage: .1),
+                      _socialContainer(icon: AppAssets.githubIcon),
                     ],
                   )
                 ],
@@ -75,6 +73,21 @@ class AuthScreen extends StatelessWidget {
         ),
       ),
     ).callback(onTap: () => unFocus(context)));
+  }
+
+  Widget _socialContainer({required String icon}) {
+    return Container(
+      padding: const EdgeInsets.all(5),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: AppColors.black)),
+      height: 50,
+      width: 50,
+      child: AppImageBuilder(
+        path: icon,
+        fit: BoxFit.cover,
+      ),
+    );
   }
 
   Center _horizontalLine() {
