@@ -18,6 +18,17 @@ class AuthScreen extends StatefulWidget {
 class _AuthScreenState extends State<AuthScreen> {
   bool passVisible = false;
   bool isLogin = true;
+
+  final emailCon = TextEditingController();
+  final passCon = TextEditingController();
+
+  @override
+  void dispose() {
+    emailCon.dispose();
+    passCon.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,7 +40,7 @@ class _AuthScreenState extends State<AuthScreen> {
           children: [
             const AppSpace(axis: Axis.vertical, percentage: .05),
             Text(
-              'E App',
+              AppString.appName,
               style: appStyle.copyWith(
                 fontSize: 30,
                 fontWeight: FontWeight.w800,
@@ -55,15 +66,17 @@ class _AuthScreenState extends State<AuthScreen> {
                     ],
                   ),
                   const AppSpace(axis: Axis.vertical, percentage: .03),
-                  const AppInputField(
+                  AppInputField(
                     title: AppString.email,
                     hint: AppString.emailHint,
+                    controller: emailCon,
                   ),
                   const AppSpace(axis: Axis.vertical, percentage: .03),
                   AppInputField(
                     title: AppString.password,
                     hint: AppString.passwordHint,
                     obscureText: !passVisible,
+                    controller: passCon,
                     suffixIcon: Icon(
                       passVisible
                           ? Icons.visibility_off_outlined

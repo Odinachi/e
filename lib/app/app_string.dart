@@ -6,6 +6,7 @@ class AppString {
   static const register = "Register";
   static const newMember = "New Member?";
   static const alreadyMember = "Already a member?";
+  static const appName = 'E App';
   static const or = "or";
   static const passwordHint = "*******";
 }
