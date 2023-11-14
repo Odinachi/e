@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../../../app/app_assets.dart';
 import '../../../app/app_constant.dart';
+import '../../../app/app_route_strings.dart';
 import '../../widgets/app_buttton.dart';
 import '../../widgets/textfield.dart';
 
@@ -89,7 +90,11 @@ class _AuthScreenState extends State<AuthScreen> {
                   ),
                   const AppSpace(axis: Axis.vertical, percentage: .05),
                   AppButton(
-                      text: isLogin ? AppString.login : AppString.register),
+                    text: isLogin ? AppString.login : AppString.register,
+                    onTap: () {
+                      Navigator.pushNamed(context, AppRouteString.order);
+                    },
+                  ),
                   const AppSpace(axis: Axis.vertical, percentage: .02),
                   RichText(
                     text: TextSpan(

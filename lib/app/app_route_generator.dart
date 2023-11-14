@@ -2,6 +2,7 @@ import 'package:e/features/auth/view/auth_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../features/orders/view/order_screen.dart';
 import 'app_colors.dart';
 import 'app_route_strings.dart';
 
@@ -11,6 +12,8 @@ class RouteGenerator {
     switch (settings.name) {
       case AppRouteString.initial:
         return _getPageRoute(const AuthScreen());
+      case AppRouteString.order:
+        return _getPageRoute(const OrderScreen());
 
       default:
         return _getPageRoute(_errorPage());
