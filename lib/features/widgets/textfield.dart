@@ -9,12 +9,14 @@ class AppInputField extends StatelessWidget {
       this.hint,
       this.validate,
       this.controller,
-      this.obscureText = false});
+      this.obscureText = false,
+      this.suffixIcon});
   final String? Function(String?)? validate;
   final String? hint;
   final String? title;
   final TextEditingController? controller;
   final bool obscureText;
+  final Widget? suffixIcon;
   @override
   Widget build(BuildContext context) {
     final border = OutlineInputBorder(
@@ -48,7 +50,8 @@ class AppInputField extends StatelessWidget {
               focusedBorder: border,
               errorBorder: border.copyWith(
                   borderSide: const BorderSide(color: AppColors.red)),
-              hintStyle: appStyle.copyWith(color: AppColors.hintGrey)),
+              hintStyle: appStyle.copyWith(color: AppColors.hintGrey),
+              suffixIcon: suffixIcon),
         ),
       ],
     );
