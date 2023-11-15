@@ -18,6 +18,8 @@ class _OrderScreenState extends State<OrderScreen> {
     super.dispose();
   }
 
+  bool showDetails = false;
+
   List<OrderModel> stages = [
     OrderModel(
       title: "ORDER PLACED",
@@ -74,17 +76,38 @@ class _OrderScreenState extends State<OrderScreen> {
               textAlign: TextAlign.start,
             ),
             const AppSpace(axis: Axis.vertical, percentage: .05),
-            ListView.builder(
-              shrinkWrap: true,
-              itemBuilder: (_, index) {
-                final s = stages[index];
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              child: showDetails
+                  ? ListView.builder(
+                      shrinkWrap: true,
+                      itemBuilder: (_, index) {
+                        final s = stages[index];
 
-                return StatusWidget(
-                  model: s,
-                  status: Status.current,
-                );
-              },
-              itemCount: stages.length,
+                        return StatusWidget(
+                          model: s,
+                          status: Status.current,
+                        );
+                      },
+                      itemCount: stages.length,
+                    )
+                  : StatusWidget(
+                      model: stages.first,
+                      status: Status.current,
+                    ).callback(
+                      onTap: () => setState(() {
+                            showDetails = !showDetails;
+                          })),
+            ),
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              child: Icon(
+                showDetails ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                size: 30,
+              ).callback(
+                  onTap: () => setState(() {
+                        showDetails = !showDetails;
+                      })),
             )
           ],
         ),
