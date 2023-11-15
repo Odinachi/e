@@ -113,23 +113,33 @@ class _AuthScreenState extends State<AuthScreen> {
                                   })),
                         ),
                         const AppSpace(axis: Axis.vertical, percentage: .05),
-                        AppButton(
-                          text: isLogin ? AppString.login : AppString.register,
-                          onTap: () async {
-                            if (_formKey.currentState?.validate() ?? false) {
-                              final cubit = context.read<AuthCubit>();
-                              if (isLogin) {
-                                cubit.login(
-                                    email: emailCon.text,
-                                    password: passCon.text);
-                              } else {
-                                cubit.register(
-                                    email: emailCon.text,
-                                    password: passCon.text);
-                              }
-                            }
-                          },
-                        ),
+                        state is AuthStateLoading
+                            ? const Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  CircularProgressIndicator(),
+                                ],
+                              )
+                            : AppButton(
+                                text: isLogin
+                                    ? AppString.login
+                                    : AppString.register,
+                                onTap: () async {
+                                  if (_formKey.currentState?.validate() ??
+                                      false) {
+                                    final cubit = context.read<AuthCubit>();
+                                    if (isLogin) {
+                                      cubit.login(
+                                          email: emailCon.text,
+                                          password: passCon.text);
+                                    } else {
+                                      cubit.register(
+                                          email: emailCon.text,
+                                          password: passCon.text);
+                                    }
+                                  }
+                                },
+                              ),
                         const AppSpace(axis: Axis.vertical, percentage: .02),
                         RichText(
                           text: TextSpan(

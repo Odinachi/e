@@ -23,7 +23,10 @@ class AuthService {
       });
       return (registred: true, error: null);
     } on FirebaseAuthException catch (e) {
-      return (registred: false, error: e.message);
+      return (
+        registred: false,
+        error: e.code.replaceAll("_", " ").replaceAll("-", " ")
+      );
     } catch (e) {
       return (registred: false, error: e.toString());
     }
@@ -36,7 +39,10 @@ class AuthService {
           email: email, password: password);
       return (loggedIn: true, error: null);
     } on FirebaseAuthException catch (e) {
-      return (loggedIn: false, error: e.message);
+      return (
+        loggedIn: false,
+        error: e.code.replaceAll("_", " ").replaceAll("-", " ")
+      );
     } catch (e) {
       return (loggedIn: false, error: e.toString());
     }
@@ -61,7 +67,10 @@ class AuthService {
 
       return (loggedIn: true, error: null);
     } on FirebaseAuthException catch (e) {
-      return (loggedIn: false, error: e.message);
+      return (
+        loggedIn: false,
+        error: e.code.replaceAll("_", " ").replaceAll("-", " ")
+      );
     } catch (e) {
       return (loggedIn: false, error: e.toString());
     }
@@ -91,7 +100,10 @@ class AuthService {
 
       return (loggedIn: true, error: null);
     } on FirebaseAuthException catch (e) {
-      return (loggedIn: false, error: e.message);
+      return (
+        loggedIn: false,
+        error: e.code.replaceAll("_", " ").replaceAll("-", " ")
+      );
     } catch (e) {
       return (loggedIn: false, error: e.toString());
     }
