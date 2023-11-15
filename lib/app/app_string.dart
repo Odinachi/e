@@ -3,6 +3,7 @@ class AppString {
   static const emailHint = "email@email.com";
   static const password = "Password";
   static const login = "Login";
+  static const invalid = "Invalid";
   static const register = "Register";
   static const newMember = "New Member?";
   static const alreadyMember = "Already a member?";

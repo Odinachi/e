@@ -1,5 +1,6 @@
 import 'package:e/app/app_colors.dart';
 import 'package:e/app/app_route_strings.dart';
+import 'package:e/app/app_string.dart';
 import 'package:e/features/auth/data/auth_service.dart';
 import 'package:e/features/auth/view_model/auth_cubit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => AuthCubit(globalAuthService)),
       ],
       child: MaterialApp(
-        title: 'E App',
+        title: AppString.appName,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primaryColor),
           scaffoldBackgroundColor: AppColors.white,

@@ -87,6 +87,10 @@ class _AuthScreenState extends State<AuthScreen> {
                           title: AppString.email,
                           hint: AppString.emailHint,
                           controller: emailCon,
+                          validate: (a) => (a ?? "").isValidEmail()
+                              ? null
+                              : "${AppString.invalid} ${AppString.email}"
+                                  .toLowerCase(),
                         ),
                         const AppSpace(axis: Axis.vertical, percentage: .03),
                         AppInputField(
@@ -94,6 +98,10 @@ class _AuthScreenState extends State<AuthScreen> {
                           hint: AppString.passwordHint,
                           obscureText: !passVisible,
                           controller: passCon,
+                          validate: (a) => (a ?? "").length > 6
+                              ? null
+                              : "${AppString.invalid} ${AppString.password}"
+                                  .toLowerCase(),
                           suffixIcon: Icon(
                             passVisible
                                 ? Icons.visibility_off_outlined
@@ -107,8 +115,19 @@ class _AuthScreenState extends State<AuthScreen> {
                         const AppSpace(axis: Axis.vertical, percentage: .05),
                         AppButton(
                           text: isLogin ? AppString.login : AppString.register,
-                          onTap: () {
-                            Navigator.pushNamed(context, AppRouteString.order);
+                          onTap: () async {
+                            if (_formKey.currentState?.validate() ?? false) {
+                              final cubit = context.read<AuthCubit>();
+                              if (isLogin) {
+                                cubit.login(
+                                    email: emailCon.text,
+                                    password: passCon.text);
+                              } else {
+                                cubit.register(
+                                    email: emailCon.text,
+                                    password: passCon.text);
+                              }
+                            }
                           },
                         ),
                         const AppSpace(axis: Axis.vertical, percentage: .02),
@@ -156,11 +175,16 @@ class _AuthScreenState extends State<AuthScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             _socialContainer(
-                                icon: AppAssets.googleIcon, callback: () {}),
+                                icon: AppAssets.googleIcon,
+                                callback: () =>
+                                    context.read<AuthCubit>().googleAuth()),
                             const AppSpace(
                                 axis: Axis.horizontal, percentage: .1),
                             _socialContainer(
-                                icon: AppAssets.githubIcon, callback: () {}),
+                                icon: AppAssets.githubIcon,
+                                callback: () => context
+                                    .read<AuthCubit>()
+                                    .githubAuth(context)),
                           ],
                         ),
                       ],
