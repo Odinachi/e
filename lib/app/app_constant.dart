@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:e/app/app_colors.dart';
 import 'package:flutter/material.dart';
 
@@ -31,4 +33,34 @@ extension Click on Widget {
         onTap: onTap,
         child: this,
       );
+}
+
+String generateRandomUsername() {
+  final Random random = Random();
+
+  // List of adjectives and nouns for creating usernames
+  List<String> adjectives = [
+    'Happy',
+    'Silly',
+    'Brave',
+    'Clever',
+    'Gentle',
+    'Fast'
+  ];
+  List<String> nouns = [
+    'Panda',
+    'Tiger',
+    'Dolphin',
+    'Dragon',
+    'Rabbit',
+    'Eagle'
+  ];
+
+  String adjective = adjectives[random.nextInt(adjectives.length)];
+  String noun = nouns[random.nextInt(nouns.length)];
+
+  // Generating a random number between 100 and 999
+  int randomNumber = 100 + random.nextInt(900);
+
+  return '$adjective$noun$randomNumber';
 }

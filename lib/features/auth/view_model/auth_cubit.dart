@@ -1,14 +1,34 @@
+import 'package:e/app/app_string.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../data/auth_service.dart';
+
 part 'auth_state.dart';
 
-abstract class AuthState {}
+class AuthCubit extends Cubit<AuthState> {
+  AuthCubit(this.authService) : super(AuthStateInit()) {
+    if (authService.loggedIn) {
+      emit(AuthStateSuccess());
+    }
+  }
+  final AuthService authService;
+  void register({required String email, required String password}) async {
+    emit(AuthStateLoading());
+    final res = await authService.register(email: email, password: password);
+    if (res.registred ?? false) {
+      emit(AuthStateSuccess());
+    } else {
+      emit(AuthStateFailed(error: res.error ?? AppString.errorText));
+    }
+  }
 
-class AuthStateInit extends AuthState {}
-
-class AuthStateLoading extends AuthState {}
-
-class AuthStateFailed extends AuthState {
-  final String error;
-  AuthStateFailed({required this.error});
+  void login({required String email, required String password}) async {
+    emit(AuthStateLoading());
+    final res = await authService.login(email: email, password: password);
+    if (res.loggedIn ?? false) {
+      emit(AuthStateSuccess());
+    } else {
+      emit(AuthStateFailed(error: res.error ?? AppString.errorText));
+    }
+  }
 }
-
-class AuthStateSuccess extends AuthState {}

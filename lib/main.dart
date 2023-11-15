@@ -1,7 +1,11 @@
 import 'package:e/app/app_colors.dart';
 import 'package:e/app/app_route_strings.dart';
+import 'package:e/features/auth/data/auth_service.dart';
+import 'package:e/features/auth/view_model/auth_cubit.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'app/app_route_generator.dart';
 
@@ -17,15 +21,22 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'E App',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primaryColor),
-        scaffoldBackgroundColor: AppColors.white,
-        useMaterial3: true,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => AuthCubit(globalAuthService)),
+      ],
+      child: MaterialApp(
+        title: 'E App',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primaryColor),
+          scaffoldBackgroundColor: AppColors.white,
+          useMaterial3: true,
+        ),
+        initialRoute: AppRouteString.initial,
+        onGenerateRoute: RouteGenerator.onGenerateRoute,
       ),
-      initialRoute: AppRouteString.initial,
-      onGenerateRoute: RouteGenerator.onGenerateRoute,
     );
   }
 }
+
+final globalAuthService = AuthService(firebaseAuth: FirebaseAuth.instance);

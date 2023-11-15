@@ -9,4 +9,5 @@ class AppString {
   static const appName = 'E App';
   static const or = "or";
   static const passwordHint = "*******";
+  static const errorText = "something happened";
 }
