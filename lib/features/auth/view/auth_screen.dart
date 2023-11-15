@@ -1,7 +1,9 @@
 import 'package:e/app/app_colors.dart';
 import 'package:e/app/app_string.dart';
+import 'package:e/features/auth/view_model/auth_cubit.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../app/app_assets.dart';
 import '../../../app/app_constant.dart';
@@ -23,6 +25,8 @@ class _AuthScreenState extends State<AuthScreen> {
   final emailCon = TextEditingController();
   final passCon = TextEditingController();
 
+  final _formKey = GlobalKey<FormState>();
+
   @override
   void dispose() {
     emailCon.dispose();
@@ -34,120 +38,138 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const AppSpace(axis: Axis.vertical, percentage: .05),
-            Text(
-              AppString.appName,
-              style: appStyle.copyWith(
-                fontSize: 30,
-                fontWeight: FontWeight.w800,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const AppSpace(axis: Axis.vertical, percentage: .05),
-            Expanded(
+      child: Form(
+        key: _formKey,
+        child: BlocConsumer<AuthCubit, AuthState>(
+          listener: (_, state) {
+            if (state is AuthStateFailed) {
+              showToast(context, state.error);
+            }
+            if (state is AuthStateSuccess) {
+              Navigator.pushNamed(context, AppRouteString.order);
+            }
+          },
+          builder: (_, state) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Row(
-                    children: [
-                      AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 200),
-                        child: Text(
-                          isLogin ? AppString.login : AppString.register,
-                          style: appStyle.copyWith(
-                              fontWeight: FontWeight.w700, fontSize: 20),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const AppSpace(axis: Axis.vertical, percentage: .03),
-                  AppInputField(
-                    title: AppString.email,
-                    hint: AppString.emailHint,
-                    controller: emailCon,
-                  ),
-                  const AppSpace(axis: Axis.vertical, percentage: .03),
-                  AppInputField(
-                    title: AppString.password,
-                    hint: AppString.passwordHint,
-                    obscureText: !passVisible,
-                    controller: passCon,
-                    suffixIcon: Icon(
-                      passVisible
-                          ? Icons.visibility_off_outlined
-                          : Icons.visibility_outlined,
-                      color: AppColors.primaryColor,
-                    ).callback(
-                        onTap: () => setState(() {
-                              passVisible = !passVisible;
-                            })),
-                  ),
                   const AppSpace(axis: Axis.vertical, percentage: .05),
-                  AppButton(
-                    text: isLogin ? AppString.login : AppString.register,
-                    onTap: () {
-                      Navigator.pushNamed(context, AppRouteString.order);
-                    },
-                  ),
-                  const AppSpace(axis: Axis.vertical, percentage: .02),
-                  RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                            text:
-                                " ${isLogin ? AppString.register : AppString.login}",
-                            style: appStyle.copyWith(
-                                color: AppColors.primaryColor,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w700),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () => setState(() {
-                                    isLogin = !isLogin;
-                                  }))
-                      ],
-                      text: isLogin
-                          ? AppString.newMember
-                          : AppString.alreadyMember,
-                      style: appStyle.copyWith(
-                          color: AppColors.black,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400),
+                  Text(
+                    AppString.appName,
+                    style: appStyle.copyWith(
+                      fontSize: 30,
+                      fontWeight: FontWeight.w800,
                     ),
                     textAlign: TextAlign.center,
                   ),
                   const AppSpace(axis: Axis.vertical, percentage: .05),
-                  Center(
-                      child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _horizontalLine(),
-                      const AppSpace(axis: Axis.horizontal, percentage: .02),
-                      const Text(AppString.or),
-                      const AppSpace(axis: Axis.horizontal, percentage: .02),
-                      _horizontalLine()
-                    ],
-                  )),
-                  const AppSpace(axis: Axis.vertical, percentage: .03),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _socialContainer(
-                          icon: AppAssets.googleIcon, callback: () {}),
-                      const AppSpace(axis: Axis.horizontal, percentage: .1),
-                      _socialContainer(
-                          icon: AppAssets.githubIcon, callback: () {}),
-                    ],
-                  ),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Row(
+                          children: [
+                            AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 200),
+                              child: Text(
+                                isLogin ? AppString.login : AppString.register,
+                                style: appStyle.copyWith(
+                                    fontWeight: FontWeight.w700, fontSize: 20),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const AppSpace(axis: Axis.vertical, percentage: .03),
+                        AppInputField(
+                          title: AppString.email,
+                          hint: AppString.emailHint,
+                          controller: emailCon,
+                        ),
+                        const AppSpace(axis: Axis.vertical, percentage: .03),
+                        AppInputField(
+                          title: AppString.password,
+                          hint: AppString.passwordHint,
+                          obscureText: !passVisible,
+                          controller: passCon,
+                          suffixIcon: Icon(
+                            passVisible
+                                ? Icons.visibility_off_outlined
+                                : Icons.visibility_outlined,
+                            color: AppColors.primaryColor,
+                          ).callback(
+                              onTap: () => setState(() {
+                                    passVisible = !passVisible;
+                                  })),
+                        ),
+                        const AppSpace(axis: Axis.vertical, percentage: .05),
+                        AppButton(
+                          text: isLogin ? AppString.login : AppString.register,
+                          onTap: () {
+                            Navigator.pushNamed(context, AppRouteString.order);
+                          },
+                        ),
+                        const AppSpace(axis: Axis.vertical, percentage: .02),
+                        RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                  text:
+                                      " ${isLogin ? AppString.register : AppString.login}",
+                                  style: appStyle.copyWith(
+                                      color: AppColors.primaryColor,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w700),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () => setState(() {
+                                          isLogin = !isLogin;
+                                        }))
+                            ],
+                            text: isLogin
+                                ? AppString.newMember
+                                : AppString.alreadyMember,
+                            style: appStyle.copyWith(
+                                color: AppColors.black,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400),
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const AppSpace(axis: Axis.vertical, percentage: .05),
+                        Center(
+                            child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            _horizontalLine(),
+                            const AppSpace(
+                                axis: Axis.horizontal, percentage: .02),
+                            const Text(AppString.or),
+                            const AppSpace(
+                                axis: Axis.horizontal, percentage: .02),
+                            _horizontalLine()
+                          ],
+                        )),
+                        const AppSpace(axis: Axis.vertical, percentage: .03),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            _socialContainer(
+                                icon: AppAssets.googleIcon, callback: () {}),
+                            const AppSpace(
+                                axis: Axis.horizontal, percentage: .1),
+                            _socialContainer(
+                                icon: AppAssets.githubIcon, callback: () {}),
+                          ],
+                        ),
+                      ],
+                    ),
+                  )
                 ],
               ),
-            )
-          ],
+            );
+          },
         ),
       ),
     ).callback(onTap: () => unFocus(context)));

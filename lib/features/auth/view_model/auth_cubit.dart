@@ -1,4 +1,5 @@
 import 'package:e/app/app_string.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../data/auth_service.dart';
@@ -25,6 +26,26 @@ class AuthCubit extends Cubit<AuthState> {
   void login({required String email, required String password}) async {
     emit(AuthStateLoading());
     final res = await authService.login(email: email, password: password);
+    if (res.loggedIn ?? false) {
+      emit(AuthStateSuccess());
+    } else {
+      emit(AuthStateFailed(error: res.error ?? AppString.errorText));
+    }
+  }
+
+  void googleAuth() async {
+    emit(AuthStateLoading());
+    final res = await authService.loginWithGoogle();
+    if (res.loggedIn ?? false) {
+      emit(AuthStateSuccess());
+    } else {
+      emit(AuthStateFailed(error: res.error ?? AppString.errorText));
+    }
+  }
+
+  void githubAuth(BuildContext context) async {
+    emit(AuthStateLoading());
+    final res = await authService.loginWithGithub(context);
     if (res.loggedIn ?? false) {
       emit(AuthStateSuccess());
     } else {
