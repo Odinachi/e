@@ -110,4 +110,5 @@ class AuthService {
   }
 
   bool get loggedIn => firebaseAuth.currentUser != null;
+  String? get name => firebaseAuth.currentUser?.displayName;
 }

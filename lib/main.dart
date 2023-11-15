@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e/app/app_colors.dart';
 import 'package:e/app/app_route_strings.dart';
 import 'package:e/app/app_string.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'app/app_route_generator.dart';
+import 'features/orders/view_model/orders_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,7 +28,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => AuthCubit(globalAuthService)),
+        BlocProvider<AuthCubit>(create: (_) => AuthCubit(globalAuthService)),
+        BlocProvider<OrderCubit>(
+            create: (_) => OrderCubit(FirebaseFirestore.instance)),
       ],
       child: MaterialApp(
         title: AppString.appName,
@@ -35,7 +39,9 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: AppColors.white,
           useMaterial3: true,
         ),
-        initialRoute: AppRouteString.initial,
+        initialRoute: globalAuthService.loggedIn
+            ? AppRouteString.order
+            : AppRouteString.initial,
         onGenerateRoute: RouteGenerator.onGenerateRoute,
       ),
     );
