@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import '../../../../app/app_assets.dart';
 import '../../../../app/app_colors.dart';
 import '../../../../app/app_constant.dart';
-import '../../data/domain/models/order_model.dart';
+import '../../data/domain/models/order_status_model.dart';
 
 class StatusWidget extends StatelessWidget {
   const StatusWidget({

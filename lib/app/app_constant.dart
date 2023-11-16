@@ -75,3 +75,28 @@ String generateRandomUsername() {
 
 void showToast(BuildContext context, [String msg = '']) =>
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+final foods = [
+  "pizza",
+  "sushi",
+  "burger",
+  "pasta",
+  "salad",
+  "tacos",
+  "ice cream",
+  "steak",
+  "curry",
+  "ramen",
+  "fried chicken",
+  "pancakes",
+  "burrito",
+  "lasagna",
+  "sushi",
+  "fries",
+  "shawarma",
+  "pad thai",
+  "sushi",
+  "dumplings"
+];
+
+String getDate(DateTime d) =>
+    "${d.day}/${d.month}/${d.year} - ${d.hour > 12 ? (d.hour - 11) : d.hour}:${d.minute} ${d.hour > 12 ? "pm" : "am"}";

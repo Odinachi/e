@@ -11,4 +11,9 @@ class AppString {
   static const or = "or";
   static const passwordHint = "*******";
   static const errorText = "something happened";
+  static const trackYourOrder = "Track your order";
+  static const orderId = "Order Id: ";
+  static const orderDate = "Date: ";
+  static const orderStatus = "Status:";
+  static const orderItems = "Items:";
 }

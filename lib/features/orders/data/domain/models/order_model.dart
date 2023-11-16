@@ -1,39 +1,81 @@
-class OrderStatusModel {
-  final String? title;
-  final DateTime? time;
-  final String? desc;
-  final String? image;
-  final bool? done;
+class OrderModel {
+  final int? status;
+  final String? id;
+  final List<Item>? items;
+  final DateTime? createdAt;
 
-  OrderStatusModel({this.title, this.time, this.desc, this.image, this.done});
+  OrderModel({
+    this.status,
+    this.id,
+    this.items,
+    this.createdAt,
+  });
 
-  OrderStatusModel copyWith(
-          {String? title,
-          DateTime? time,
-          String? desc,
-          String? image,
-          bool? done}) =>
-      OrderStatusModel(
-          title: title ?? this.title,
-          time: time ?? this.time,
-          desc: desc ?? this.desc,
-          image: image ?? this.image,
-          done: done ?? this.done);
+  OrderModel copyWith({
+    int? status,
+    String? id,
+    List<Item>? items,
+    DateTime? createdAt,
+  }) =>
+      OrderModel(
+        status: status ?? this.status,
+        id: id ?? this.id,
+        items: items ?? this.items,
+        createdAt: createdAt ?? this.createdAt,
+      );
 
-  factory OrderStatusModel.fromJson(Map<String, dynamic> json) =>
-      OrderStatusModel(
-        title: json["title"],
-        time: json["time"] == null ? null : DateTime.parse(json["time"]),
-        desc: json["desc"],
-        image: json["image"],
-        done: json["done"],
+  factory OrderModel.fromJson(Map<String, dynamic> json) => OrderModel(
+        status: json["status"],
+        id: json["id"],
+        items: json["items"] == null
+            ? []
+            : List<Item>.from(json["items"]!.map((x) => Item.fromJson(x))),
+        createdAt: json["created_at"] == null
+            ? null
+            : DateTime.tryParse(json["created_at"]),
       );
 
   Map<String, dynamic> toJson() => {
-        "title": title,
-        "time": time?.toIso8601String(),
-        "desc": desc,
-        "image": image,
-        "done": done,
+        "status": status,
+        "id": id,
+        "items": items == null
+            ? []
+            : List<dynamic>.from(items!.map((x) => x.toJson())),
+        "created_at": createdAt?.toIso8601String(),
+      };
+}
+
+class Item {
+  final String? name;
+  final num? price;
+  final num? quantity;
+
+  Item({
+    this.name,
+    this.price,
+    this.quantity,
+  });
+
+  Item copyWith({
+    String? name,
+    num? price,
+    num? quantity,
+  }) =>
+      Item(
+        name: name ?? this.name,
+        price: price ?? this.price,
+        quantity: quantity ?? this.quantity,
+      );
+
+  factory Item.fromJson(Map<String, dynamic> json) => Item(
+        name: json["name"],
+        price: json["price"],
+        quantity: json["quantity"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "name": name,
+        "price": price,
+        "quantity": quantity,
       };
 }

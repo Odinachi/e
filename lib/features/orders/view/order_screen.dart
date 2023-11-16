@@ -1,12 +1,10 @@
-import 'dart:async';
-
-import 'package:ably_flutter/ably_flutter.dart' as ably;
 import 'package:e/app/app_colors.dart';
+import 'package:e/features/orders/data/domain/models/order_model.dart';
+import 'package:e/features/orders/view/widget/order_widget.dart';
 import 'package:e/features/orders/view_model/orders_cubit.dart';
 import 'package:e/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '../../../app/app_constant.dart';
 
@@ -19,42 +17,12 @@ class OrderScreen extends StatefulWidget {
 
 class _OrderScreenState extends State<OrderScreen> {
   @override
-  void dispose() {
-    super.dispose();
-    channelMessageSubscription?.cancel();
-  }
-
-  StreamSubscription<ably.Message>? channelMessageSubscription;
-
-  List<String> orders = ['one'];
-  final clientOptions = ably.ClientOptions(key: dotenv.get("ablyKey"));
-
-  void conf() {
-    channelMessageSubscription = ably.Realtime(options: clientOptions)
-        .channels
-        .get("Item1")
-        .subscribe()
-        .listen((event) {
-      print("listen kkkk ${event.data}");
-      print("listen kkkk ${event.name}");
-      print("listen kkkk ${event.timestamp}");
-      print("listen kkkk ${event.extras?.map}");
-      print("=======================");
-    });
-  }
-
-  void load() {
-    ably.Realtime(options: clientOptions)
-        .channels
-        .get("Item1")
-        .publish(data: {"KKKKKKKKK": "hshshhshhs"});
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
         floatingActionButton: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () {
+            context.read<OrderCubit>().addRandomOrder();
+          },
           backgroundColor: AppColors.primaryColor,
           child: const Icon(
             Icons.add,
@@ -79,7 +47,24 @@ class _OrderScreenState extends State<OrderScreen> {
                 const AppSpace(axis: Axis.vertical, percentage: .05),
                 StreamBuilder(
                     stream: context.read<OrderCubit>().orderStream(),
-                    builder: (_, snapshot) {return SizedBox();})
+                    builder: (_, snapshot) {
+                      if (!snapshot.hasData) {
+                        return const SizedBox.shrink();
+                      }
+                      return Expanded(
+                        child: ListView.builder(
+                          itemBuilder: (_, index) {
+                            final each = OrderModel.fromJson(
+                                snapshot.data?.docs[index].data()
+                                    as Map<String, dynamic>);
+                            return OrderItemWidget(
+                              order: each,
+                            );
+                          },
+                          itemCount: snapshot.data?.docs.length,
+                        ),
+                      );
+                    })
               ],
             ),
           ),
