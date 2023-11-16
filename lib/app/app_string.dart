@@ -16,4 +16,8 @@ class AppString {
   static const orderDate = "Date: ";
   static const orderStatus = "Status:";
   static const orderItems = "Items:";
+  static const total = "Total:";
+  static const price = "PRICE";
+  static const qty = "QTY";
+  static const name = "NAME";
 }

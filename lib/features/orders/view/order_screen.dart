@@ -52,7 +52,8 @@ class _OrderScreenState extends State<OrderScreen> {
                         return const SizedBox.shrink();
                       }
                       return Expanded(
-                        child: ListView.builder(
+                        child: ListView.separated(
+                          padding: const EdgeInsets.only(bottom: 100),
                           itemBuilder: (_, index) {
                             final each = OrderModel.fromJson(
                                 snapshot.data?.docs[index].data()
@@ -61,7 +62,11 @@ class _OrderScreenState extends State<OrderScreen> {
                               order: each,
                             );
                           },
-                          itemCount: snapshot.data?.docs.length,
+                          itemCount: snapshot.data?.docs.length ?? 0,
+                          separatorBuilder: (BuildContext context, int index) =>
+                              const AppSpace(
+                            percentage: .02,
+                          ),
                         ),
                       );
                     })

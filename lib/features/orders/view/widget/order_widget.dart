@@ -88,6 +88,10 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
 
   @override
   Widget build(BuildContext context) {
+    double price = 0;
+    widget.order?.items?.forEach((element) {
+      price += (element.price ?? 0);
+    });
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       decoration: BoxDecoration(
@@ -108,6 +112,39 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
           ),
           const Divider(
             height: 10,
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  AppString.name,
+                  style:
+                      appStyle.copyWith(color: AppColors.black, fontSize: 13),
+                ),
+              ),
+              Expanded(
+                child: Text(
+                  AppString.qty,
+                  textAlign: TextAlign.center,
+                  style:
+                      appStyle.copyWith(color: AppColors.black, fontSize: 13),
+                ),
+              ),
+              Expanded(
+                child: Text(
+                  AppString.price,
+                  textAlign: TextAlign.right,
+                  style:
+                      appStyle.copyWith(color: AppColors.black, fontSize: 13),
+                ),
+              ),
+            ],
+          ),
+          const Divider(
+            height: 10,
+          ),
+          AppSpace(
+            percentage: .01,
           ),
           ListView.builder(
             itemBuilder: (_, index) {
@@ -143,9 +180,34 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
                 ),
               );
             },
-            itemCount: widget.order?.items?.length,
+            itemCount: (widget.order?.items?.length ?? 0),
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
+          ),
+          const Divider(
+            height: 10,
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  AppString.total,
+                  style:
+                      appStyle.copyWith(color: AppColors.black, fontSize: 13),
+                ),
+              ),
+              Expanded(
+                child: Text(
+                  "\$${price.toStringAsFixed(2)}",
+                  textAlign: TextAlign.right,
+                  style:
+                      appStyle.copyWith(color: AppColors.black, fontSize: 13),
+                ),
+              ),
+            ],
+          ),
+          const Divider(
+            height: 10,
           ),
           const AppSpace(
             percentage: .01,

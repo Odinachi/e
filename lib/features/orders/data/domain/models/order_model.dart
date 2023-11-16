@@ -1,15 +1,11 @@
 class OrderModel {
   final int? status;
   final String? id;
+  final String? userId;
   final List<Item>? items;
   final DateTime? createdAt;
 
-  OrderModel({
-    this.status,
-    this.id,
-    this.items,
-    this.createdAt,
-  });
+  OrderModel({this.status, this.id, this.items, this.createdAt, this.userId});
 
   OrderModel copyWith({
     int? status,
@@ -18,15 +14,16 @@ class OrderModel {
     DateTime? createdAt,
   }) =>
       OrderModel(
-        status: status ?? this.status,
-        id: id ?? this.id,
-        items: items ?? this.items,
-        createdAt: createdAt ?? this.createdAt,
-      );
+          status: status ?? this.status,
+          id: id ?? this.id,
+          items: items ?? this.items,
+          createdAt: createdAt ?? this.createdAt,
+          userId: this.userId);
 
   factory OrderModel.fromJson(Map<String, dynamic> json) => OrderModel(
         status: json["status"],
         id: json["id"],
+        userId: json["user_id"],
         items: json["items"] == null
             ? []
             : List<Item>.from(json["items"]!.map((x) => Item.fromJson(x))),
@@ -42,6 +39,7 @@ class OrderModel {
             ? []
             : List<dynamic>.from(items!.map((x) => x.toJson())),
         "created_at": createdAt?.toIso8601String(),
+        "user_id": userId,
       };
 }
 
