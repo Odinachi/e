@@ -58,7 +58,7 @@ E APP is an intuitive Order tracking app developed using Flutter, Firebase, and 
 
 ## Visuals
 ### Video
-1. Google Auth Flow  [![Google auth flow](https://github.com/Odinachi/e/blob/dev/assets/video/1.mov)](https://github.com/Odinachi/e/blob/dev/assets/video/1.mov)
+1. Google Auth Flow <a href="https://github.com/Odinachi/e/blob/dev/assets/video/1.mov" title="Link Title"><img src="https://github.com/Odinachi/e/blob/dev/assets/video/1.mov" alt="video" /></a>
 
 ### Pictures
 
