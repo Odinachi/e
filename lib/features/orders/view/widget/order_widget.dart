@@ -95,7 +95,7 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
   }
 
   Future<void> publish(int stage) async {
-    await Future.delayed(const Duration(seconds: 10), () async {
+    await Future.delayed(const Duration(seconds: 3), () async {
       await realtimeChannel?.publish(
           message: ably.Message(
         data: {"stage": stage},

@@ -33,6 +33,7 @@ class MyApp extends StatelessWidget {
             create: (_) => OrderCubit(FirebaseFirestore.instance)),
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: AppString.appName,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primaryColor),
