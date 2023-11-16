@@ -20,5 +20,6 @@ class AppString {
   static const price = "PRICE";
   static const qty = "QTY";
   static const name = "NAME";
+  static const delete = "Delete";
   static const useThe = 'Use the "+" button to add order';
 }

@@ -17,6 +17,7 @@ class OrderScreen extends StatefulWidget {
 }
 
 class _OrderScreenState extends State<OrderScreen> {
+  String? showingId;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,8 +80,16 @@ class _OrderScreenState extends State<OrderScreen> {
                           itemBuilder: (_, index) {
                             final each = list[index];
                             return OrderItemWidget(
-                              key: ValueKey("${each.status}${each.docId}"),
+                              key: ValueKey(each.id),
                               order: each,
+                              viewMore: () => setState(() {
+                                if (showingId == each.id) {
+                                  showingId = null;
+                                } else {
+                                  showingId = each.id;
+                                }
+                              }),
+                              showDetails: showingId == each.id,
                             );
                           },
                           itemCount: snapshot.data?.docs.length ?? 0,

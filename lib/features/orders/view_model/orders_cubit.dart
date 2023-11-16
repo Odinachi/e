@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e/app/app_constant.dart';
 import 'package:e/features/orders/data/domain/models/order_model.dart';
 import 'package:e/main.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'orders_state.dart';
@@ -34,5 +35,9 @@ class OrderCubit extends Cubit<OrderState> {
 
   void updateOrderStatus({required int status, required String docId}) async {
     await fireStore.collection('orders').doc(docId).update({'status': status});
+  }
+
+  void deleteOrder({required String docId}) async {
+    await fireStore.collection('orders').doc(docId).delete();
   }
 }

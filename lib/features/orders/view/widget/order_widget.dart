@@ -15,15 +15,21 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../../data/domain/models/order_model.dart';
 
 class OrderItemWidget extends StatefulWidget {
-  const OrderItemWidget({super.key, this.order});
+  const OrderItemWidget({
+    super.key,
+    this.order,
+    this.showDetails = false,
+    required this.viewMore,
+  });
   final OrderModel? order;
-
+  final bool showDetails;
+  final Function() viewMore;
   @override
   State<OrderItemWidget> createState() => _OrderItemWidgetState();
 }
 
 class _OrderItemWidgetState extends State<OrderItemWidget> {
-  bool showDetails = false;
+  // bool showDetails = false;
 
   List<OrderStatusModel> stages = [
     OrderStatusModel(
@@ -98,15 +104,17 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
   }
 
   void call() async {
-    await publish(1);
-    await publish(2);
-    await publish(3);
-    await publish(4);
-    await publish(5);
+    final stat = widget.order?.status ?? 0;
+    final iterations = stages.length - stat;
+
+    for (int o = stat; o < iterations + stat; o++) {
+      await publish(o);
+    }
   }
 
   @override
   void initState() {
+    widget.showDetails;
     if ((widget.order?.status ?? 0) < 5) {
       realtimeChannel = ably.Realtime(options: clientOptions)
           .channels
@@ -123,184 +131,211 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
     widget.order?.items?.forEach((element) {
       price += ((element.price ?? 0) * (element.quantity ?? 0));
     });
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: AppColors.black.withOpacity(.3))),
-      child: Column(
-        children: [
-          _detailWidget(AppString.orderId, widget.order?.id ?? ""),
-          _detailWidget(AppString.orderDate,
-              getDate(widget.order?.createdAt ?? DateTime.now())),
-          const AppSpace(
-            percentage: .01,
-          ),
-          Text(
-            AppString.orderItems,
-            style: appStyle.copyWith(fontSize: 13),
-            textAlign: TextAlign.start,
-          ),
-          const Divider(
-            height: 10,
-          ),
-          Row(
+
+    return BlocBuilder<OrderCubit, OrderState>(
+      builder: (_, state) {
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: AppColors.black.withOpacity(.3))),
+          child: Column(
             children: [
-              Expanded(
-                child: Text(
-                  AppString.name,
-                  style:
-                      appStyle.copyWith(color: AppColors.black, fontSize: 13),
-                ),
+              _detailWidget(AppString.orderId, widget.order?.id ?? ""),
+              _detailWidget(AppString.orderDate,
+                  getDate(widget.order?.createdAt ?? DateTime.now())),
+              const AppSpace(
+                percentage: .01,
               ),
-              Expanded(
-                child: Text(
-                  AppString.qty,
-                  textAlign: TextAlign.center,
-                  style:
-                      appStyle.copyWith(color: AppColors.black, fontSize: 13),
-                ),
+              Text(
+                AppString.orderItems,
+                style: appStyle.copyWith(fontSize: 13),
+                textAlign: TextAlign.start,
               ),
-              Expanded(
-                child: Text(
-                  AppString.price,
-                  textAlign: TextAlign.right,
-                  style:
-                      appStyle.copyWith(color: AppColors.black, fontSize: 13),
-                ),
+              const Divider(
+                height: 10,
               ),
-            ],
-          ),
-          const Divider(
-            height: 10,
-          ),
-          const AppSpace(
-            percentage: .01,
-          ),
-          ListView.builder(
-            itemBuilder: (_, index) {
-              final each = widget.order?.items?[index];
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 10),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      AppString.name,
+                      style: appStyle.copyWith(
+                          color: AppColors.black, fontSize: 13),
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      AppString.qty,
+                      textAlign: TextAlign.center,
+                      style: appStyle.copyWith(
+                          color: AppColors.black, fontSize: 13),
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      AppString.price,
+                      textAlign: TextAlign.right,
+                      style: appStyle.copyWith(
+                          color: AppColors.black, fontSize: 13),
+                    ),
+                  ),
+                ],
+              ),
+              const Divider(
+                height: 10,
+              ),
+              const AppSpace(
+                percentage: .01,
+              ),
+              ListView.builder(
+                itemBuilder: (_, index) {
+                  final each = widget.order?.items?[index];
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            each?.name ?? "",
+                            style: appStyle.copyWith(
+                                color: AppColors.black, fontSize: 13),
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            (each?.quantity ?? "").toString(),
+                            textAlign: TextAlign.center,
+                            style: appStyle.copyWith(
+                                color: AppColors.black, fontSize: 13),
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            "\$${each?.price?.toStringAsFixed(2)}",
+                            textAlign: TextAlign.right,
+                            style: appStyle.copyWith(
+                                color: AppColors.black, fontSize: 13),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                itemCount: (widget.order?.items?.length ?? 0),
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+              ),
+              const Divider(
+                height: 10,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      AppString.total,
+                      style: appStyle.copyWith(
+                          color: AppColors.black, fontSize: 13),
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      "\$${price.toStringAsFixed(2)}",
+                      textAlign: TextAlign.right,
+                      style: appStyle.copyWith(
+                          color: AppColors.black, fontSize: 13),
+                    ),
+                  ),
+                ],
+              ),
+              const Divider(
+                height: 10,
+              ),
+              const AppSpace(
+                percentage: .01,
+              ),
+              Text(
+                AppString.orderStatus,
+                style: appStyle.copyWith(fontSize: 13),
+                textAlign: TextAlign.start,
+              ),
+              const AppSpace(
+                percentage: .01,
+              ),
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: widget.showDetails
+                    ? ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (_, index) {
+                          final s = stages[index];
+                          final currentStatus = (widget.order?.status ?? 0);
+                          return StatusWidget(
+                            model: s,
+                            status: currentStatus == index
+                                ? Status.current
+                                : currentStatus > index
+                                    ? Status.passed
+                                    : Status.future,
+                          );
+                        },
+                        itemCount: stages.length,
+                      )
+                    : StatusWidget(
+                        model: stages[widget.order?.status ?? 0],
+                        status: Status.current,
+                      ),
+              ),
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Expanded(
-                      child: Text(
-                        each?.name ?? "",
-                        style: appStyle.copyWith(
-                            color: AppColors.black, fontSize: 13),
-                      ),
+                    Text(
+                      AppString.trackYourOrder,
+                      style: appStyle.copyWith(
+                          color: AppColors.black, fontSize: 13),
                     ),
-                    Expanded(
-                      child: Text(
-                        (each?.quantity ?? "").toString(),
-                        textAlign: TextAlign.center,
-                        style: appStyle.copyWith(
-                            color: AppColors.black, fontSize: 13),
-                      ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        "\$${each?.price?.toStringAsFixed(2)}",
-                        textAlign: TextAlign.right,
-                        style: appStyle.copyWith(
-                            color: AppColors.black, fontSize: 13),
-                      ),
+                    Icon(
+                      widget.showDetails
+                          ? Icons.arrow_drop_up
+                          : Icons.arrow_drop_down,
+                      size: 30,
                     ),
                   ],
-                ),
-              );
-            },
-            itemCount: (widget.order?.items?.length ?? 0),
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-          ),
-          const Divider(
-            height: 10,
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  AppString.total,
-                  style:
-                      appStyle.copyWith(color: AppColors.black, fontSize: 13),
-                ),
+                ).callback(onTap: widget.viewMore),
               ),
-              Expanded(
-                child: Text(
-                  "\$${price.toStringAsFixed(2)}",
-                  textAlign: TextAlign.right,
-                  style:
-                      appStyle.copyWith(color: AppColors.black, fontSize: 13),
-                ),
+              const AppSpace(
+                percentage: .01,
               ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.delete,
+                    color: AppColors.red,
+                    size: 18,
+                  ),
+                  const AppSpace(
+                    axis: Axis.horizontal,
+                    percentage: .01,
+                  ),
+                  Text(
+                    AppString.delete,
+                    style: appStyle.copyWith(
+                      color: AppColors.red,
+                    ),
+                  ),
+                ],
+              ).callback(
+                  onTap: () => context
+                      .read<OrderCubit>()
+                      .deleteOrder(docId: widget.order?.docId ?? ""))
             ],
           ),
-          const Divider(
-            height: 10,
-          ),
-          const AppSpace(
-            percentage: .01,
-          ),
-          Text(
-            AppString.orderStatus,
-            style: appStyle.copyWith(fontSize: 13),
-            textAlign: TextAlign.start,
-          ),
-          const AppSpace(
-            percentage: .01,
-          ),
-          AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
-            child: showDetails
-                ? ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (_, index) {
-                      final s = stages[index];
-                      final currentStatus = (widget.order?.status ?? 0);
-                      return StatusWidget(
-                        model: s,
-                        status: currentStatus == index
-                            ? Status.current
-                            : currentStatus > index
-                                ? Status.passed
-                                : Status.future,
-                      );
-                    },
-                    itemCount: stages.length,
-                  )
-                : StatusWidget(
-                    model: stages[widget.order?.status ?? 0],
-                    status: Status.current,
-                  ).callback(
-                    onTap: () => setState(() {
-                          showDetails = !showDetails;
-                        })),
-          ),
-          AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  AppString.trackYourOrder,
-                  style:
-                      appStyle.copyWith(color: AppColors.black, fontSize: 13),
-                ),
-                Icon(
-                  showDetails ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-                  size: 30,
-                ),
-              ],
-            ).callback(
-                onTap: () => setState(() {
-                      showDetails = !showDetails;
-                    })),
-          )
-        ],
-      ),
+        );
+      },
     );
   }
 
