@@ -54,3 +54,19 @@ E APP is an intuitive Order tracking app developed using Flutter, Firebase, and 
 1. **Sign Up/Login:** Use your preferred method of authentication to create an account or log in.
 2. **Creating an Order:** On the home screen, click on the "+" icon to start the order creation process.
 3. **Testing Order Stages:** For testing purposes, note that each stage of order is optimized to take 3 seconds for quick validation and testing.
+
+
+## Visuals
+### Video
+1. Google Auth Flow  [![Google auth flow](https://raw.githubusercontent.com/Odinachi/e/assets/video/1.mov)](https://raw.githubusercontent.com/Odinachi/e/assets/video/1.mov)
+
+### Pictures
+
+1. Auth Screen  ![alt text](./assets/images/5.png?raw=true)
+2. Home Screen  ![alt text](./assets/images/1.png?raw=true)
+3. Delivery Details  ![alt text](./assets/images/3.png?raw=true)
+4. Delivery Details  ![alt text](./assets/images/4.png?raw=true)
+5. Delivered!  ![alt text](./assets/images/2.png?raw=true)
+
+
+
