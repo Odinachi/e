@@ -63,7 +63,15 @@ class AuthService {
       );
 
       // Once signed in, return the UserCredential
-      await FirebaseAuth.instance.signInWithCredential(credential);
+      await FirebaseAuth.instance
+          .signInWithCredential(credential)
+          .then((value) async {
+        User? user = firebaseAuth.currentUser;
+        if (user?.displayName == null) {
+          await user?.updateDisplayName(generateRandomUsername());
+          await user?.reload();
+        }
+      });
 
       return (loggedIn: true, error: null);
     } on FirebaseAuthException catch (e) {
@@ -96,7 +104,15 @@ class AuthService {
       final githubAuthCredential = GithubAuthProvider.credential(result.token!);
 
       // Once signed in, return the UserCredential
-      await FirebaseAuth.instance.signInWithCredential(githubAuthCredential);
+      await FirebaseAuth.instance
+          .signInWithCredential(githubAuthCredential)
+          .then((value) async {
+        User? user = firebaseAuth.currentUser;
+        if (user?.displayName == null) {
+          await user?.updateDisplayName(generateRandomUsername());
+          await user?.reload();
+        }
+      });
 
       return (loggedIn: true, error: null);
     } on FirebaseAuthException catch (e) {
