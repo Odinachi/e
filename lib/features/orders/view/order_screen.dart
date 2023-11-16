@@ -24,6 +24,7 @@ class _OrderScreenState extends State<OrderScreen> {
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             context.read<OrderCubit>().addRandomOrder();
+            showToast(context, "New Order Added");
           },
           backgroundColor: AppColors.primaryColor,
           child: const Icon(

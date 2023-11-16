@@ -73,8 +73,12 @@ String generateRandomUsername() {
   return '$adjective$noun$randomNumber';
 }
 
-void showToast(BuildContext context, [String msg = '']) =>
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+void showToast(BuildContext context, [String msg = '']) {
+  final sm = ScaffoldMessenger.of(context);
+  sm.removeCurrentSnackBar();
+  sm.showSnackBar(SnackBar(content: Text(msg)));
+}
+
 final foods = [
   "pizza",
   "sushi",

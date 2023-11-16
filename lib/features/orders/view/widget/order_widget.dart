@@ -328,10 +328,12 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
                     ),
                   ),
                 ],
-              ).callback(
-                  onTap: () => context
-                      .read<OrderCubit>()
-                      .deleteOrder(docId: widget.order?.docId ?? ""))
+              ).callback(onTap: () {
+                context
+                    .read<OrderCubit>()
+                    .deleteOrder(docId: widget.order?.docId ?? "");
+                showToast(context, "Order Deleted");
+              })
             ],
           ),
         );
