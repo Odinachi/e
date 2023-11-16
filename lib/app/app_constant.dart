@@ -99,4 +99,4 @@ final foods = [
 ];
 
 String getDate(DateTime d) =>
-    "${d.day}/${d.month}/${d.year} - ${d.hour > 12 ? (d.hour - 11) : d.hour}:${d.minute} ${d.hour > 12 ? "pm" : "am"}";
+    "${d.day}/${d.month}/${d.year} - ${d.hour > 12 ? (d.hour - 11) : d.hour}:${d.minute.toString().length == 1 ? "${d.minute}0" : d.minute} ${d.hour > 12 ? "pm" : "am"}";

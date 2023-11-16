@@ -31,4 +31,8 @@ class OrderCubit extends Cubit<OrderState> {
             status: 0)
         .toJson());
   }
+
+  void updateOrderStatus({required int status, required String docId}) async {
+    await fireStore.collection('orders').doc(docId).update({'status': status});
+  }
 }

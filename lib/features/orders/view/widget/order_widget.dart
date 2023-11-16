@@ -7,7 +7,9 @@ import 'package:e/app/app_constant.dart';
 import 'package:e/app/app_string.dart';
 import 'package:e/features/orders/data/domain/models/order_status_model.dart';
 import 'package:e/features/orders/view/widget/status_widget.dart';
+import 'package:e/features/orders/view_model/orders_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '../../data/domain/models/order_model.dart';
@@ -39,18 +41,18 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
     OrderStatusModel(
         title: "ORDER PICK UP IN PROGRESS",
         time: DateTime.now(),
-        desc: "",
+        desc: "Rider is picking up your order",
         image: AppAssets.progressIcon),
     OrderStatusModel(
       title: "ORDER ON THE WAY TO CUSTOMER",
       time: DateTime.now(),
-      desc: "",
+      desc: "Rider is on the way",
       image: AppAssets.deliveryIcon,
     ),
     OrderStatusModel(
       title: "ORDER ARRIVED",
       time: DateTime.now(),
-      desc: "",
+      desc: "Knock Knock, your rider is outside",
       image: AppAssets.arrivedIcon,
     ),
     OrderStatusModel(
@@ -67,30 +69,59 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
     channelMessageSubscription?.cancel();
   }
 
+  ably.RealtimeChannel? realtimeChannel;
+
   StreamSubscription<ably.Message>? channelMessageSubscription;
 
-  List<String> orders = ['one'];
   final clientOptions = ably.ClientOptions(key: dotenv.get("ablyKey"));
 
-  void conf() {
-    channelMessageSubscription = ably.Realtime(options: clientOptions)
-        .channels
-        .get("Item1")
-        .subscribe()
-        .listen((event) {
-      print("listen kkkk ${event.data}");
-      print("listen kkkk ${event.name}");
-      print("listen kkkk ${event.timestamp}");
-      print("listen kkkk ${event.extras?.map}");
-      print("=======================");
+  void listen() {
+    channelMessageSubscription = realtimeChannel?.subscribe().listen((event) {
+      final status = ((event.data as Map?)?['stage'] as int?) ?? 0;
+      context
+          .read<OrderCubit>()
+          .updateOrderStatus(status: status, docId: widget.order?.docId ?? "");
+      if (status >= 5) {
+        realtimeChannel?.detach();
+        channelMessageSubscription?.cancel();
+      }
     });
+  }
+
+  Future<void> publish(int stage) async {
+    await Future.delayed(const Duration(seconds: 10), () async {
+      await realtimeChannel?.publish(
+          message: ably.Message(
+        data: {"stage": stage},
+      ));
+    });
+  }
+
+  void call() async {
+    await publish(1);
+    await publish(2);
+    await publish(3);
+    await publish(4);
+    await publish(5);
+  }
+
+  @override
+  void initState() {
+    if ((widget.order?.status ?? 0) < 5) {
+      realtimeChannel = ably.Realtime(options: clientOptions)
+          .channels
+          .get(widget.order?.id ?? "");
+      listen();
+      call();
+    }
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     double price = 0;
     widget.order?.items?.forEach((element) {
-      price += (element.price ?? 0);
+      price += ((element.price ?? 0) * (element.quantity ?? 0));
     });
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -143,7 +174,7 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
           const Divider(
             height: 10,
           ),
-          AppSpace(
+          const AppSpace(
             percentage: .01,
           ),
           ListView.builder(
@@ -228,16 +259,20 @@ class _OrderItemWidgetState extends State<OrderItemWidget> {
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (_, index) {
                       final s = stages[index];
-
+                      final currentStatus = (widget.order?.status ?? 0);
                       return StatusWidget(
                         model: s,
-                        status: Status.current,
+                        status: currentStatus == index
+                            ? Status.current
+                            : currentStatus > index
+                                ? Status.passed
+                                : Status.future,
                       );
                     },
                     itemCount: stages.length,
                   )
                 : StatusWidget(
-                    model: stages.first,
+                    model: stages[widget.order?.status ?? 0],
                     status: Status.current,
                   ).callback(
                     onTap: () => setState(() {

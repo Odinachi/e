@@ -66,13 +66,20 @@ class _OrderScreenState extends State<OrderScreen> {
                             ],
                           );
                         }
+                        final list = List<OrderModel>.from(
+                            (snapshot.data?.docs ?? []).map((e) =>
+                                OrderModel.fromJson(
+                                        e.data() as Map<String, dynamic>)
+                                    .copyWith(docId: e.id)));
+
+                        list.sort((a, b) => (b.createdAt ?? DateTime.now())
+                            .compareTo(a.createdAt ?? DateTime.now()));
                         return ListView.separated(
                           padding: const EdgeInsets.only(bottom: 100),
                           itemBuilder: (_, index) {
-                            final each = OrderModel.fromJson(
-                                snapshot.data?.docs[index].data()
-                                    as Map<String, dynamic>);
+                            final each = list[index];
                             return OrderItemWidget(
+                              key: ValueKey("${each.status}${each.docId}"),
                               order: each,
                             );
                           },

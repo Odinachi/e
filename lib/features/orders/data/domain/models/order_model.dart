@@ -1,15 +1,25 @@
-class OrderModel {
+import 'package:equatable/equatable.dart';
+
+class OrderModel extends Equatable {
   final int? status;
   final String? id;
+  final String? docId;
   final String? userId;
   final List<Item>? items;
   final DateTime? createdAt;
 
-  OrderModel({this.status, this.id, this.items, this.createdAt, this.userId});
+  const OrderModel(
+      {this.status,
+      this.id,
+      this.items,
+      this.createdAt,
+      this.userId,
+      this.docId});
 
   OrderModel copyWith({
     int? status,
     String? id,
+    String? docId,
     List<Item>? items,
     DateTime? createdAt,
   }) =>
@@ -18,7 +28,8 @@ class OrderModel {
           id: id ?? this.id,
           items: items ?? this.items,
           createdAt: createdAt ?? this.createdAt,
-          userId: this.userId);
+          userId: userId,
+          docId: docId ?? this.docId);
 
   factory OrderModel.fromJson(Map<String, dynamic> json) => OrderModel(
         status: json["status"],
@@ -41,6 +52,9 @@ class OrderModel {
         "created_at": createdAt?.toIso8601String(),
         "user_id": userId,
       };
+
+  @override
+  List<Object?> get props => [docId, id, status, createdAt];
 }
 
 class Item {

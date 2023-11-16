@@ -51,17 +51,17 @@ class StatusWidget extends StatelessWidget {
                     text: TextSpan(
                       text: model.title,
                       children: [
-                        TextSpan(
-                          text:
-                              " (${DateTime.now().difference(model.time ?? DateTime.now()).inMinutes} mins ago)",
-                          style: appStyle.copyWith(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 13,
-                            color: status == Status.current
-                                ? AppColors.white.withOpacity(.8)
-                                : AppColors.hintGrey,
-                          ),
-                        ),
+                        // TextSpan(
+                        //   text:
+                        //       " (${DateTime.now().difference(model.time ?? DateTime.now()).inMinutes} mins ago)",
+                        //   style: appStyle.copyWith(
+                        //     fontWeight: FontWeight.w500,
+                        //     fontSize: 13,
+                        //     color: status == Status.current
+                        //         ? AppColors.white.withOpacity(.8)
+                        //         : AppColors.hintGrey,
+                        //   ),
+                        // ),
                       ],
                       style: appStyle.copyWith(
                         fontWeight: FontWeight.w700,
